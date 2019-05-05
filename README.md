@@ -1,2 +1,2 @@
-# docker-promethus-grafana
+# docker-prometheus-grafana
 Prometheus, Grafana, Node Exporter, cAdvisor Stack for Docker Swarm
