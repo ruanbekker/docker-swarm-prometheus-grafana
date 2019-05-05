@@ -37,6 +37,11 @@ services:
     deploy:
       mode: global
 
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.12.0
+    networks:
+      - shared
+
   alertmanager:
     image: prom/alertmanager
     ports:
@@ -60,14 +65,16 @@ services:
   prometheus:
     image: prom/prometheus
     user: root
-    deploy:
-      replicas: 1
+    ports:
+      - 9090:9090
     volumes:
       - promconfig:/etc/prometheus
       - promdata:/prometheus
     configs:
       - source: prometheus_config
         target: /etc/prometheus/prometheus.yml
+      - source: prometheus_rules
+        target: /etc/prometheus/alert.rules
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -86,6 +93,14 @@ services:
       - 3000:3000
     volumes:
       - grafanadata:/var/lib/grafana
+      - grafana_provisioning:/etc/grafana/provisioning
+    configs:
+      - source: grafana_config_datasource
+        target: /etc/grafana/provisioning/datasources/prometheus.yml
+      - source: grafana_config_dashboard
+        target: /etc/grafana/provisioning/dashboards/ds_prometheus.yml
+      - source: grafana_config_mydash
+        target: /etc/grafana/provisioning/dashboards/DockerMonitoring.json
     environment:
       - GF_SERVER_ROOT_URL=http://grafana.localhost
       - GF_SECURITY_ADMIN_USER=admin
@@ -120,9 +135,19 @@ volumes:
   promdata: {}
   grafanadata: {}
   alertmanager: {}
+  grafana_provisioning: {}
+
 
 configs:
   alertmanager_config:
     file: ./alertmanager/configs/alertmanager.yml
   prometheus_config:
     file: ./prometheus/configs/prometheus.yml
+  prometheus_rules:
+    file: ./prometheus/rules/alert.rules
+  grafana_config_datasource:
+    file: ./grafana/provisioning/datasources/prometheus.yml
+  grafana_config_dashboard:
+    file: ./grafana/provisioning/dashboards/ds_prometheus.yml
+  grafana_config_mydash:
+    file: ./grafana/provisioning/dashboards/DockerMonitoring.json
