@@ -20,3 +20,12 @@ groups:
     annotations:
       summary: "Instance {{ $labels.instance }} under high load"
       description: "{{ $labels.instance }} of job {{ $labels.job }} is under high load."
+      
+  - alert: low_memory
+    expr: node_memory_MemAvailable_bytes/1024/1024 < 512
+    for: 2m
+    labels:
+      severity: page
+    annotations:
+      summary: "Instance {{ $labels.instance }} has low memory"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has low memory."
