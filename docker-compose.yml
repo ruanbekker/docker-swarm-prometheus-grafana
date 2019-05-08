@@ -103,6 +103,8 @@ services:
         target: /etc/grafana/provisioning/dashboards/DockerMonitoring.json
       - source: grafana_config_mydash2
         target: /etc/grafana/provisioning/dashboards/DockerPrometheusMonitoring.json
+      - source: grafana_config_bbe
+        target: /etc/grafana/provisioning/dashboards/BlackboxExporter.json
     environment:
       - GF_SERVER_ROOT_URL=http://grafana.localhost
       - GF_SECURITY_ADMIN_USER=admin
@@ -155,3 +157,5 @@ configs:
     file: ./grafana/provisioning/dashboards/DockerMonitoring.json
   grafana_config_mydash2:
     file: ./grafana/provisioning/dashboards/DockerPrometheusMonitoring.json
+  grafana_config_bbe:
+    file: ./grafana/provisioning/dashboards/BlackboxExporter.json
