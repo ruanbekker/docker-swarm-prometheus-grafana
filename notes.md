@@ -10,3 +10,6 @@ Blackbox Exporter:
 Alertmanager:
 - https://itnext.io/prometheus-with-alertmanager-f2a1f7efabd6
 - https://medium.com/quiq-blog/better-slack-alerts-from-prometheus-49125c8c672b
+
+Dashboards:
+- [7587 - Blackbox Exporter](https://grafana.com/dashboards/7587)
