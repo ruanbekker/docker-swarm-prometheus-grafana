@@ -173,7 +173,7 @@ volumes:
   grafanadata: {}
   alertmanager: {}
   grafana_provisioning: {}
-
+  mysql_data: {}
 
 configs:
   alertmanager_config:
