@@ -7,6 +7,9 @@
 Blackbox Exporter:
 - https://www.digitalocean.com/community/tutorials/how-to-use-alertmanager-and-blackbox-exporter-to-monitor-your-web-server-on-ubuntu-16-04
 
+MySQL Exporter:
+- https://www.robustperception.io/monitoring-mysqld-with-prometheus
+
 Alertmanager:
 - https://itnext.io/prometheus-with-alertmanager-f2a1f7efabd6
 - https://medium.com/quiq-blog/better-slack-alerts-from-prometheus-49125c8c672b
