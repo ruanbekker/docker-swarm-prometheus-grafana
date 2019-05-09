@@ -127,6 +127,39 @@ services:
         - traefik.backend=grafana
         - traefik.docker.network=proxy
         - traefik.redirectorservice.frontend.entryPoints=http
+  
+  mysqld:
+    image: mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command:
+      - '--default-authentication-plugin=mysql_native_password'
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    networks:
+      - shared
+
+  mysql-exporter:
+    image: prom/mysqld-exporter
+    ports:
+      - 9104:9104
+    environment:
+      - DATA_SOURCE_NAME=root:password@(mysqld:3306)/
+    networks:
+      - shared
+  
+  backup:
+    image: alpine
+    entrypoint: |
+      sh -c 'sh -s << EOF
+      apk add --no-cache mysql-client
+      while true
+        do sleep 60
+        date >> /tmp/data.txt
+      done
+      EOF'
+    networks:
+      - shared
 
 networks:
   shared:
