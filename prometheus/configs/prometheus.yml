@@ -54,3 +54,11 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: blackbox-exporter:9115
+
+  - job_name: 'mysql-exporter'
+    scrape_interval: 5s
+    dns_sd_configs:
+    - names:
+      - 'tasks.mysql-exporter'
+      type: 'A'
+      port: 9104
