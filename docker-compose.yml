@@ -105,6 +105,8 @@ services:
         target: /etc/grafana/provisioning/dashboards/DockerPrometheusMonitoring.json
       - source: grafana_config_bbe
         target: /etc/grafana/provisioning/dashboards/BlackboxExporter.json
+      - source: grafana_config_mysql
+        target: /etc/grafana/provisioning/dashboards/MysqlOverview.json
     environment:
       - GF_SERVER_ROOT_URL=http://grafana.localhost
       - GF_SECURITY_ADMIN_USER=admin
@@ -112,7 +114,7 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
       - PROMETHEUS_ENDPOINT=http://prometheus:9090
     networks:
-      - proxy
+      - proxynet
       - shared
     deploy:
       replicas: 1
@@ -123,49 +125,19 @@ services:
         - traefik.frontend.rule=Host:grafana.localhost
         - traefik.enable=true
         - traefik.port=3000
-        - traefik.tags=proxy
+        - traefik.tags=proxynet
         - traefik.backend=grafana
-        - traefik.docker.network=proxy
+        - traefik.docker.network=proxynet
         - traefik.redirectorservice.frontend.entryPoints=http
   
-  mysqld:
-    image: mysql
-    volumes:
-      - mysql_data:/var/lib/mysql
-    command:
-      - '--default-authentication-plugin=mysql_native_password'
-    environment:
-      - MYSQL_ROOT_PASSWORD=password
-    networks:
-      - shared
-
-  mysql-exporter:
-    image: prom/mysqld-exporter
-    ports:
-      - 9104:9104
-    environment:
-      - DATA_SOURCE_NAME=root:password@(mysqld:3306)/
-    networks:
-      - shared
-  
-  backup:
-    image: alpine
-    entrypoint: |
-      sh -c 'sh -s << EOF
-      apk add --no-cache mysql-client
-      while true
-        do sleep 60
-        date >> /tmp/data.txt
-      done
-      EOF'
-    networks:
-      - shared
-
 networks:
   shared:
+    name: shared
     driver: overlay
-  proxy:
-    external: true
+  proxynet:
+    name: proxynet
+    driver: overlay
+    #external: true
 
 volumes:
   promconfig: {}
@@ -173,7 +145,6 @@ volumes:
   grafanadata: {}
   alertmanager: {}
   grafana_provisioning: {}
-  mysql_data: {}
 
 configs:
   alertmanager_config:
@@ -192,3 +163,5 @@ configs:
     file: ./grafana/provisioning/dashboards/DockerPrometheusMonitoring.json
   grafana_config_bbe:
     file: ./grafana/provisioning/dashboards/BlackboxExporter.json
+  grafana_config_mysql:
+    file: ./grafana/provisioning/dashboards/MysqlOverview.json

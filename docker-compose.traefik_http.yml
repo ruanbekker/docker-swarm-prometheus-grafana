@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.5'
 
 services:
   traefik:
@@ -16,8 +16,8 @@ services:
         - traefik.frontend.rule=Host:${TRAEFIK_FQDN:-traefik.localhost}
         - traefik.enable=true
         - traefik.port=8080
-        - traefik.tags=proxy
-        - traefik.docker.network=proxy
+        - traefik.tags=proxynet
+        - traefik.docker.network=proxynet
         - traefik.redirectorservice.frontend.entryPoints=http
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -26,14 +26,15 @@ services:
       --docker.swarmmode
       --docker.watch
       --docker.exposedbydefault=false
-      --constraints=tag==proxy
+      --constraints=tag==proxynet
       --entrypoints='Name:http Address::80'
       --logLevel=INFO
       --accessLog
       --api
     networks:
-      - proxy
+      - proxynet
 
 networks:
-  proxy:
-    external: true
+  proxynet:
+    name: proxynet
+    driver: overlay
