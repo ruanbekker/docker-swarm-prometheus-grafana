@@ -7,6 +7,9 @@
 Blackbox Exporter:
 - https://www.digitalocean.com/community/tutorials/how-to-use-alertmanager-and-blackbox-exporter-to-monitor-your-web-server-on-ubuntu-16-04
 
+MySQL in Swarm:
+- https://github.com/toughIQ/docker-mariadb-cluster/issues/2
+
 MySQL Exporter:
 - https://www.robustperception.io/monitoring-mysqld-with-prometheus
 
