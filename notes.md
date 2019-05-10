@@ -9,6 +9,7 @@ Blackbox Exporter:
 
 MySQL in Swarm:
 - https://github.com/toughIQ/docker-mariadb-cluster/issues/2
+- https://hub.docker.com/r/toughiq/mariadb-cluster/
 
 MySQL Exporter:
 - https://www.robustperception.io/monitoring-mysqld-with-prometheus
