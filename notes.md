@@ -14,6 +14,11 @@ MySQL in Swarm:
 MySQL Exporter:
 - https://www.robustperception.io/monitoring-mysqld-with-prometheus
 
+Node Exporter:
+- https://www.balena.io/blog/monitoring-linux-stats-with-prometheus-io/
+- https://devopscube.com/monitor-linux-servers-prometheus-node-exporter/
+- https://www.robustperception.io/tag/node-exporter
+
 Alertmanager:
 - https://itnext.io/prometheus-with-alertmanager-f2a1f7efabd6
 - https://medium.com/quiq-blog/better-slack-alerts-from-prometheus-49125c8c672b
