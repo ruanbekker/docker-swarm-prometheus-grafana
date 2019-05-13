@@ -21,3 +21,4 @@ Alertmanager:
 Dashboards:
 - [7587 - Blackbox Exporter](https://grafana.com/dashboards/7587)
 - [7362 - MySQL Exporter](https://grafana.com/dashboards/7362) | [Exporter Setup](https://severalnines.com/blog/mysql-docker-how-monitor-mysql-containers-prometheus-part-1-deployment-standalone-and-swarm)
+- [1860 - Node Exporter](https://grafana.com/dashboards/1860)
