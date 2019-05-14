@@ -37,6 +37,19 @@ scrape_configs:
       type: 'A'
       port: 9100
 
+#  - job_name: 'node_n1'
+#    static_configs:
+#    - targets:
+#        - 'x.x.x.x:9100'
+#      labels:
+#        cloud_provider: 'contabo'
+#        my_hostname: 'x.x.x'
+#    relabel_configs:
+#    - source_labels: [__address__]
+#      regex: '.*'
+#      target_label: instance
+#      replacement: 'x.x.x'
+
   - job_name: 'blackbox'
     metrics_path: /probe
     params:

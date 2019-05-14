@@ -8,12 +8,19 @@ services:
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker:/var/lib/docker:ro
-    ports:
-      - 8081:8080
     networks:
       - shared
+      - proxynet
     deploy:
       mode: global
+    labels:
+        - traefik.frontend.rule=Host:cadvisor.${DOMAIN:-localhost}
+        - traefik.enable=true
+        - traefik.port=8080
+        - traefik.tags=proxynet
+        - traefik.backend=cadvisor
+        - traefik.docker.network=proxynet
+        - traefik.redirectorservice.frontend.entryPoints=http
 
   node-exporter:
     image: prom/node-exporter
@@ -44,8 +51,6 @@ services:
 
   alertmanager:
     image: prom/alertmanager
-    ports:
-      - 9093:9093
     configs:
       - source: alertmanager_config
         target: /etc/alertmanager/config.yml
@@ -56,22 +61,29 @@ services:
       - alertmanager:/alertmanager
     networks:
       - shared
+      - proxynet
     deploy:
       replicas: 1
       placement:
         constraints:
            - node.role==manager
+      labels:
+        - traefik.frontend.rule=Host:alertmanager.${DOMAIN:-localhost}
+        - traefik.enable=true
+        - traefik.port=9093
+        - traefik.tags=proxynet
+        - traefik.backend=alertmanager
+        - traefik.docker.network=proxynet
+        - traefik.redirectorservice.frontend.entryPoints=http
 
   prometheus:
     image: prom/prometheus
     user: root
-    ports:
-      - 9090:9090
     volumes:
       - promconfig:/etc/prometheus
       - promdata:/prometheus
     configs:
-      - source: prometheus_config
+      - source: prometheus_config2
         target: /etc/prometheus/prometheus.yml
       - source: prometheus_rules
         target: /etc/prometheus/alert.rules
@@ -82,15 +94,22 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
     networks:
       - shared
+      - proxynet
     deploy:
       placement:
         constraints:
           - node.role==manager
+      labels:
+        - traefik.frontend.rule=Host:prometheus.${DOMAIN:-localhost}
+        - traefik.enable=true
+        - traefik.port=9090
+        - traefik.tags=proxynet
+        - traefik.backend=prometheus
+        - traefik.docker.network=proxynet
+        - traefik.redirectorservice.frontend.entryPoints=http
 
   grafana:
     image: grafana/grafana
-    ports:
-      - 3000:3000
     volumes:
       - grafanadata:/var/lib/grafana
       - grafana_provisioning:/etc/grafana/provisioning
@@ -108,9 +127,9 @@ services:
       - source: grafana_config_mysql
         target: /etc/grafana/provisioning/dashboards/MysqlOverview.json
     environment:
-      - GF_SERVER_ROOT_URL=http://grafana.localhost
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=password
+      - GF_SERVER_ROOT_URL=http://grafana.${DOMAIN:-localhost}
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
       - PROMETHEUS_ENDPOINT=http://prometheus:9090
     networks:
@@ -122,7 +141,7 @@ services:
         constraints:
           - node.role==manager
       labels:
-        - traefik.frontend.rule=Host:grafana.localhost
+        - traefik.frontend.rule=Host:grafana.${DOMAIN:-localhost}
         - traefik.enable=true
         - traefik.port=3000
         - traefik.tags=proxynet
@@ -149,7 +168,7 @@ volumes:
 configs:
   alertmanager_config:
     file: ./alertmanager/configs/alertmanager.yml
-  prometheus_config:
+  prometheus_config2:
     file: ./prometheus/configs/prometheus.yml
   prometheus_rules:
     file: ./prometheus/rules/alert.rules
