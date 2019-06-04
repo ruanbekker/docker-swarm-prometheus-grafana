@@ -22,6 +22,8 @@ Github Exporter:
 - https://grafana.com/dashboards/1559
 - https://www.brianchristner.io/monitor-your-github-repos-with-docker/
 
+Speedtest Exporter:
+- https://github.com/nlamirault/speedtest_exporter
 
 Node Exporter:
 - https://www.balena.io/blog/monitoring-linux-stats-with-prometheus-io/
